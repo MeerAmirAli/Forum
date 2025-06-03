@@ -4,17 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Category;
+use Exception;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Question;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
 
 class QuestionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
+
+
+
     public function index()
     {
-        //
+        $categories = Category::all();
+        return view('questions', compact('categories'));
     }
 
     /**
@@ -23,7 +34,7 @@ class QuestionController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('questions.create', compact('categories'));
+        return view('questions', compact('categories'));
     }
 
     /**
@@ -32,40 +43,41 @@ class QuestionController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|min:10|max:255',
-            'body' => 'required|min:20',
             'category_id' => 'required|exists:categories,id',
-            'tags' => 'sometimes|array'
+            'desc' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'tags' => 'required|string|max:255'
         ]);
 
-        // This works without User import
-        $question = auth()->user()->questions()->create(
-            $request->validate([
-                'title' => 'required',
-                'body' => 'required'
-            ])
-        );
+        try {
+            Question::create([
+                'user_id' => Auth::id(),
+                'category_id' => $validated['category_id'],
+                'title' => $validated['title'],
+                'desc' => $validated['desc'],
+                'tags' => $validated['tags'],
+            ]);
 
-        if ($request->has('tags')) {
-            $question->tags()->attach($request->tags);
+            return redirect()->route('question.index')->with('success', 'Question has been added');
+        } catch (\Exception $e) {
+            Log::error('Question Added error' . $e->getMessage());
+            return back()->withInput()->with('Error', 'Failed to Add Question');
         }
-
-        return redirect()->route('questions.show', $question)
-            ->with('success', 'Question posted successfully!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(Question $question)
     {
-        return $user->questions;
+        return view('questions.show', compact('question'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(question $question)
+    public function edit(Question $question)
     {
         //
     }
@@ -73,7 +85,7 @@ class QuestionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, question $question)
+    public function update(Request $request, Question $question)
     {
         //
     }
@@ -81,7 +93,7 @@ class QuestionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(question $question)
+    public function destroy(Question $question)
     {
         //
     }

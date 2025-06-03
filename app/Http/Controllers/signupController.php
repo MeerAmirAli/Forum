@@ -6,56 +6,53 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 use function Laravel\Prompts\password;
 
 class signupController extends Controller
 {
-    public function signup(Request $req){
-    // return $req;
+    public function signup(Request $req)
+    {
+        // return $req;
 
-    $req->validate([
-        'username' => 'required|min:4',
-        'email' => 'required|email|unique:users',
-        'pass' => 'required|min:8',
-        'confirm_pass' => 'required|same:pass'
-    ]);
-    
-    try{
-
-        DB::beginTransaction();
-    
-    $user = User::create([
-        'name' => $req->username,
-        'email' => $req->email,
-        'password' => $req->pass
-    ]);
-
-    $user->markEmailAsVerified();
-
-    DB::commit();
+        $req->validate([
+            'username' => 'required|min:4',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8|confirmed',
+        ]);
 
 
-    session()->flash('response', [
-        'status' => 'success',
-        'message' => 'User Registered Successfully'
-    ]);
+        try {
 
-    return back();
+            DB::beginTransaction();
+
+            $user = User::create([
+                'name' => $req->username,
+                'email' => $req->email,
+                'password' => Hash::make($req->password)
+            ]);
+
+            $user->markEmailAsVerified();
+
+            DB::commit();
 
 
-}catch(Exception $error){
+            session()->flash('response', [
+                'status' => 'success',
+                'message' => 'User Registered Successfully'
+            ]);
 
-DB::rollBack();
+            return back();
+        } catch (Exception $error) {
 
-return "Cannot Create User";
+            DB::rollBack();
 
-
-}
-
-    }
-        public function showSignup(){
-            return view('signup');
+            return "Cannot Create User";
         }
-
     }
+    public function showSignup()
+    {
+        return view('signup');
+    }
+}

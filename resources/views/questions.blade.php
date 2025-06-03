@@ -25,7 +25,7 @@
                 </div>
 
                 <!-- Question Form -->
-                <form action="{Route(questions.store)}" method="post" class="space-y-4">
+                <form action="{{Route('question.store')}}" method="post" class="space-y-4">
                     @csrf
                     <!-- Question Title -->
                     <div class="form-control">
@@ -46,12 +46,10 @@
                         <label class="label">
                             <span class="label-text">Category</span>
                         </label>
-                        <select class="select select-bordered w-full">
-                            <option disabled selected>Select Category</option>
-                            <option>Web Development</option>
-                            <option>Mobile Development</option>
-                            <option>DevOps</option>
-                            <option>Cloud Computing</option>
+                        <select name="category_id" class="select select-bordered w-full">
+                            @foreach ($categories as $category)
+                                <option value="{{$category->id}}">{{$category->name}}</option>
+                            @endforeach
                         </select>
                     </div>
 
@@ -80,34 +78,12 @@
                             class="textarea textarea-bordered h-48" 
                             placeholder="Explain your question in detail..."
                             required
-                            name="question_detail"
+                            name="desc"
                         ></textarea>
                     </div>
 
-                    <!-- Anonymous Post -->
-                    <div class="form-control">
-                        <label class="label cursor-pointer justify-start gap-2">
-                            <input type="checkbox" class="checkbox checkbox-sm" />
-                            <span class="label-text">Post anonymously</span>
-                        </label>
-                    </div>
 
-                    <!-- Attachments -->
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text">Add Attachments</span>
-                        </label>
-                        <div class="flex items-center gap-4">
-                            <input type="file" name="file" class="hidden" id="file-upload" />
-                            <label for="file-upload" class="btn btn-outline">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-                                </svg>
-                                Upload File
-                            </label>
-                            <span class="text-sm text-base-content/70" id="file-name">No file chosen</span>
-                        </div>
-                    </div>
+                    
                     <!-- Form Actions -->
                     <div class="flex gap-4 mt-6">
                         <a href="/" class="btn btn-ghost flex-1">Cancel</a>
@@ -115,7 +91,6 @@
                     </div>
 
                     
-
                 </form>
             </div>
         </div>
@@ -124,16 +99,12 @@
         <p class="text-center mt-4 text-sm text-base-content/70">
             By posting, you agree to our <a href="#" class="link link-primary">community guidelines</a>
         </p>
+
     </div>
 </div>
+<x-footer-banner />
 
-    <!-- File Upload Script -->
-    <script>
-        document.getElementById('file-upload').addEventListener('change', function(e) {
-            const fileName = e.target.files[0] ? e.target.files[0].name : 'No file chosen';
-            document.getElementById('file-name').textContent = fileName;
-        });
-    </script>
+    
 </body>
 </html>
 </div>

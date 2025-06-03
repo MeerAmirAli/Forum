@@ -69,7 +69,7 @@
                             placeholder="Create password" 
                             class="input input-bordered" 
                             required
-                            name="pass"
+                            name="password"
                              value="{{old('pass')}}"
                         />
                     </div>
@@ -87,7 +87,7 @@
                             placeholder="Confirm password" 
                             class="input input-bordered" 
                             required
-                            name="confirm_pass"
+                            name="password_confirmation"
                             value="{{old('confirm_pass')}}"
                         />
                     </div>

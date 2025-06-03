@@ -21,16 +21,18 @@
                 <article class="card bg-base-100 shadow mb-4">
                     <div class="card-body">
                         <h2 class="card-title">Popular Categories</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="card bg-base-200">
-                                <div class="card-body">
-                                    <h3 class="card-title">Web Development</h3>
-                                    <p>Latest post: 2 hours ago</p>
-                                    <div class="card-actions justify-end">
-                                        <button class="btn btn-sm btn-primary">View</button>
-                                    </div>
-                                </div>
-                            </div>
+                        @foreach ($categories as $category)
+    <div class="card bg-base-200">
+        <div class="card-body">
+            <h3 class="card-title">{{ $category->name }}</h3>
+            <p>Latest post: {{ $category->latestThread->created_at->diffForHumans() ?? 'No posts yet' }}</p>
+            <div class="card-actions justify-end">
+                <a href="{{ route('category.show', $category->id) }}" class="btn btn-sm btn-primary">View</a>
+            </div>
+        </div>
+    </div>
+@endforeach
+
                             <!-- Repeat other categories -->
                         </div>
                     </div>
@@ -45,23 +47,16 @@
                                 <tbody>
                                     <!-- Thread Items -->
                                     <tr class="hover">
-                                        <td>
-                                            <div class="flex items-center gap-3">
-                                                <div class="avatar">
-                                                    <div class="mask mask-circle w-12 h-12">
-                                                        <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt="User avatar" />
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div class="font-bold">How to use DaisyUI with React?</div>
-                                                    <div class="text-sm opacity-50">Web Development</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            12 replies<br>
-                                            <span class="text-sm">Last post 2h ago</span>
-                                        </td>
+                                        @foreach ($threads as $thread)
+    <div class="mb-4 p-4 border rounded shadow">
+        <h2 class="text-xl font-bold text-blue-700">{{ $thread->title }}</h2>
+        <p class="text-sm text-gray-600">{{ $thread->user->name }} | {{ $thread->created_at->diffForHumans() }}</p>
+        <p class="text-gray-700 mt-2">{{ Str::limit($thread->body, 150) }}</p>
+        <a href="{{ route('threads.show', $thread) }}" class="text-blue-600 text-sm">View Thread</a>
+    </div>
+@endforeach
+
+
                                     </tr>
                                     <!-- Repeat other threads -->
                                 </tbody>
@@ -77,7 +72,15 @@
                     <div class="card-body">
                         <h2 class="card-title">Recent Activity</h2>
                         <ul class="menu">
-                            <li><a class="hover:bg-base-200">New post in Web Development</a></li>
+                            <ul class="text-sm text-gray-700">
+    @foreach ($activities as $activity)
+        <li class="mb-1">
+            <strong>{{ $activity->user->name }}</strong> {{ $activity->type }}
+            <br><span class="text-xs text-gray-500">{{ $activity->created_at->diffForHumans() }}</span>
+        </li>
+    @endforeach
+</ul>
+
                             <!-- Other activity items -->
                         </ul>
                     </div>

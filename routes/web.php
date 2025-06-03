@@ -1,6 +1,8 @@
 <?php
 
-
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LatestController;
 use App\Http\Controllers\signupController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
@@ -10,20 +12,26 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::view('home','home');
+Route::resource('home',HomeController::class);
 
 // Route::view('login','login');
-Route::post('/signup',[signupController::class,'signup']);
-Route::get('/signup',[signupController::class,'showSignup']);
-
-Route::get('/login', [LoginController::class, 'showLogin']);
-Route::post('/login', [LoginController::class, 'login']);
-
-Route::view('/question','addQuestion');
+Route::get('signup', [SignupController::class, 'showSignup'])->name('signup');
+Route::post('signup', [SignupController::class, 'signup'])->name('signup.submit');
 
 
-    Route::get('/questions/create', [QuestionController::class, 'create'])->name('questions.create');
-    Route::post('/questions', [QuestionController::class, 'store'])->name('questions.store');
+Route::get('login', [LoginController::class, 'showLogin'])->name('login');
+Route::post('login', [LoginController::class, 'store'])->name('login.submit');
+
+
+Route::resource('question', QuestionController::class);
+
+Route::resource('latest',LatestController::class);
+Route::resource('comment',CommentController::class);
+
+
+
+
+    
 
 
 

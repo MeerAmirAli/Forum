@@ -7,34 +7,25 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    //
+    public function store(Request $req)
+    {
+        $credentials = $req->only('email', 'password');
 
-    public function login(Request $req){
+        if (Auth::attempt($credentials)) {
+            return redirect()->intended('/home')->with('response', [
+                'status' => 'success',
+                'message' => 'User Login Successfully'
+            ]);
+        }
 
-        $credentials = [
-
-            'email' => $req->email,
-            'password' => $req->password
-
-        ];
-
-    if(Auth::attempt($credentials)){
-        session()->flash('response', [
-            'status' => 'success',
-            'message' => 'User Login Successfully'
-        ]);
-        return back();
-    }else{
-        session()->flash('response', [
+        return redirect()->back()->with('response', [
             'status' => 'error',
             'message' => 'Incorrect Credentials'
         ]);
-        return back();
-    };
-
     }
 
-    public function showLogin(){
+    public function showLogin()
+    {
         return view('login');
     }
 }
