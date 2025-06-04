@@ -44,9 +44,12 @@ class HomeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Home $home)
+    public function show($id)
     {
-        //
+        $category = Category::with(['questions.user'])->findOrFail($id);
+
+        // Pass category and its questions to the view
+        return view('category.show', compact('category'));
     }
 
     /**

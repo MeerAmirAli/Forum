@@ -18,49 +18,42 @@
             <!-- Main Section -->
             <section class="grow md:w-3/4">
                 <!-- Categories -->
-                <article class="card bg-base-100 shadow mb-4">
-                    <div class="card-body">
-                        <h2 class="card-title">Popular Categories</h2>
-                        @foreach ($categories as $category)
-    <div class="card bg-base-200">
-        <div class="card-body">
-            <h3 class="card-title">{{ $category->name }}</h3>
-            <p>Latest post: {{ $category->latestThread->created_at->diffForHumans() ?? 'No posts yet' }}</p>
-            <div class="card-actions justify-end">
-                <a href="{{ route('category.show', $category->id) }}" class="btn btn-sm btn-primary">View</a>
-            </div>
-        </div>
-    </div>
-@endforeach
-
-                            <!-- Repeat other categories -->
-                        </div>
+                <!-- Categories -->
+<article class="card bg-base-100 shadow mb-4">
+    <div class="card-body">
+        <h2 class="card-title">Popular Categories</h2>
+        @foreach ($categories as $category)
+            <div class="card bg-base-200 mb-2">
+                <div class="card-body">
+                    <h3 class="card-title">{{ $category->name }}</h3>
+                    <div class="card-actions justify-end">
+                        <a href="{{ route('category.show', $category->id) }}" class="btn btn-sm btn-primary">View</a>
                     </div>
-                </article>
+                </div>
+            </div>
+        @endforeach
+    </div>
+</article>
+
 
                 <!-- Recent Threads -->
                 <article class="card bg-base-100 shadow">
                     <div class="card-body">
                         <h2 class="card-title">Recent Threads</h2>
                         <div class="overflow-x-auto">
-                            <table class="table">
-                                <tbody>
-                                    <!-- Thread Items -->
-                                    <tr class="hover">
-                                        @foreach ($threads as $thread)
-    <div class="mb-4 p-4 border rounded shadow">
-        <h2 class="text-xl font-bold text-blue-700">{{ $thread->title }}</h2>
-        <p class="text-sm text-gray-600">{{ $thread->user->name }} | {{ $thread->created_at->diffForHumans() }}</p>
-        <p class="text-gray-700 mt-2">{{ Str::limit($thread->body, 150) }}</p>
-        <a href="{{ route('threads.show', $thread) }}" class="text-blue-600 text-sm">View Thread</a>
+                            <div class="overflow-x-auto">
+    <div class="space-y-4">
+        @foreach ($threads as $thread)
+            <div class="mb-4 p-4 border rounded shadow">
+                <h2 class="text-xl font-bold text-blue-700">{{ $thread->title }}</h2>
+                <p class="text-sm text-gray-600">{{ $thread->user->name }} | {{ $thread->created_at->diffForHumans() }}</p>
+                <p class="text-gray-700 mt-2">{{ Str::limit($thread->body, 150) }}</p>
+                <a href="{{ route('threads.show', $thread) }}" class="text-blue-600 text-sm">View Thread</a>
+            </div>
+        @endforeach
     </div>
-@endforeach
+</div>
 
-
-                                    </tr>
-                                    <!-- Repeat other threads -->
-                                </tbody>
-                            </table>
                         </div>
                     </div>
                 </article>
@@ -100,8 +93,7 @@
         </div>
     </main>
 
-    <x-footer-banner />
-
+    
     <!-- Floating Action Button -->
     <div class="fixed bottom-4 right-4">
         <button class="btn btn-primary btn-circle btn-lg shadow-lg">
@@ -110,6 +102,8 @@
             </svg>
         </button>
     </div>
+    
+    <x-footer-banner />
 </body>
 </html>
 </div>

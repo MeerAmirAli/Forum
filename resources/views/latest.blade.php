@@ -37,7 +37,7 @@
                 <h4 class="text-base font-medium text-gray-700 mb-2">Comments</h4>
                 @forelse ($question->comments as $comment)
                     <div class="border p-2 mb-2 rounded bg-gray-100 text-sm">
-                        <strong>{{ $comment->user->name }}:</strong> {{ $comment->body }}
+                        <strong>{{ $comment->user->name }}:</strong> {{ $comment->content }}
                     </div>
                 @empty
                     <p class="text-sm text-gray-500">No comments yet.</p>
@@ -46,10 +46,10 @@
 
             {{-- Comment form --}}
             @auth
-                <form method="POST" action="" class="mt-4">
+                <form id="form" action="{{route('comment.store')}}" method="POST" class="mt-4">
                     @csrf
                     <input type="hidden" name="question_id" value="{{ $question->id }}">
-                    <textarea name="body" rows="2" class="w-full border rounded p-2 text-sm" placeholder="Add a comment..."></textarea>
+                    <textarea name="content" rows="2" class="w-full border rounded p-2 text-sm" placeholder="Add a comment..."></textarea>
                     <button type="submit" class="mt-2 px-4 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">Post Comment</button>
                 </form>
             @else
@@ -74,6 +74,11 @@
 
 <x-footer-banner />
 
+<script>
+    
+
+
+</script>
 </body>
 </html>
 

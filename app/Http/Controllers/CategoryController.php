@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\category;
+use App\Models\Question;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -12,7 +13,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        
     }
 
     /**
@@ -34,9 +35,13 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(category $category)
+    public function show($id)
     {
-        //
+        $category = Category::with(['questions.user'])->findOrFail($id);
+
+
+        // Pass category and its questions to the view
+        return view('category', compact('category'));
     }
 
     /**

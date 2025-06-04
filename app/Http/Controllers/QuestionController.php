@@ -68,9 +68,10 @@ class QuestionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Question $question)
+    public function show($id)
     {
-        return view('questions.show', compact('question'));
+        $category = Category::with(['questions.user'])->findOrFail($id);
+        return view('category', compact('category'));
     }
 
 
