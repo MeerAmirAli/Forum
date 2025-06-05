@@ -37,55 +37,72 @@
 
 
                 <!-- Recent Threads -->
-                <article class="card bg-base-100 shadow">
-                    <div class="card-body">
-                        <h2 class="card-title">Recent Threads</h2>
-                        <div class="overflow-x-auto">
-                            <div class="overflow-x-auto">
-    <div class="space-y-4">
-        @foreach ($threads as $thread)
-            <div class="mb-4 p-4 border rounded shadow">
-                <h2 class="text-xl font-bold text-blue-700">{{ $thread->title }}</h2>
-                <p class="text-sm text-gray-600">{{ $thread->user->name }} | {{ $thread->created_at->diffForHumans() }}</p>
-                <p class="text-gray-700 mt-2">{{ Str::limit($thread->body, 150) }}</p>
-                <a href="{{ route('threads.show', $thread) }}" class="text-blue-600 text-sm">View Thread</a>
-            </div>
-        @endforeach
+<article class="card bg-base-100 shadow">
+    <div class="card-body">
+        <h2 class="card-title">Recent Threads</h2>
+        <div class="space-y-4">
+            @forelse ($threads as $thread)
+                <div class="border p-4 rounded hover:shadow transition">
+                    <h3 class="text-xl font-semibold text-blue-600">
+                        {{ $thread->title }}
+                    </h3>
+                    <p class="text-sm text-gray-600">
+                        Asked by {{ $thread->user->name ?? 'Anonymous' }} • {{ $thread->created_at->diffForHumans() }}
+                    </p>
+                    <p class="mt-2 text-gray-700">
+                        {{ \Illuminate\Support\Str::limit($thread->desc, 150) }}
+                    </p>
+                    <a onclick="question('{{$thread->title}}','{{$thread->user->name }}','{{$thread->desc}}')" class="text-blue-500 text-sm mt-1 inline-block">View Full Question</a>
+                </div>
+            @empty
+                <p>No recent threads found.</p>
+            @endforelse
+        </div>
     </div>
-</div>
+</article>
 
-                        </div>
-                    </div>
-                </article>
+<!-- Question Modal -->
+<dialog id="questionModal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box max-w-2xl bg-white p-6 rounded-lg shadow-lg relative">
+        <button onclick="closeQuestionModal()" class="btn btn-sm btn-circle absolute right-4 top-4">✕</button>
+
+        <h2 id="modalTitle" class="text-2xl font-bold text-blue-700 mb-2"></h2>
+        <p id="modalUser" class="text-sm text-gray-600 mb-2">By User</p>
+        <p id="modalDesc" class="mb-4 text-gray-800">Question Description...</p>
+
+        <div id="modalComments" class="space-y-3">
+            <p class="font-semibold">Comments:</p>
+            <!-- Comments dynamically added here -->
+        </div>
+    </div>
+</dialog>
+
+
             </section>
 
             <!-- Sidebar -->
             <aside class="md:w-1/4">
-                <div class="card bg-base-100 shadow">
-                    <div class="card-body">
-                        <h2 class="card-title">Recent Activity</h2>
-                        <ul class="menu">
-                            <ul class="text-sm text-gray-700">
-    @foreach ($activities as $activity)
-        <li class="mb-1">
-            <strong>{{ $activity->user->name }}</strong> {{ $activity->type }}
-            <br><span class="text-xs text-gray-500">{{ $activity->created_at->diffForHumans() }}</span>
-        </li>
-    @endforeach
-</ul>
-
-                            <!-- Other activity items -->
-                        </ul>
-                    </div>
-                </div>
-                
+            
                 <div class="card bg-base-100 shadow mt-4">
                     <div class="card-body">
                         <h2 class="card-title">Popular Tags</h2>
                         <div class="flex flex-wrap gap-2">
-                            <span class="badge badge-primary">React</span>
-                            <span class="badge badge-secondary">JavaScript</span>
-                            <!-- Other tags -->
+                            @foreach($categories as $category)
+    
+
+    @foreach($category->questions as $question)
+        
+
+        @php
+            $tags = explode(',', $question->tags); // split comma-separated tags
+        @endphp
+
+        @foreach($tags as $tag)
+            <span class="badge badge-secondary">{{ trim($tag) }}</span>
+        @endforeach
+    @endforeach
+@endforeach
+
                         </div>
                     </div>
                 </div>
@@ -104,6 +121,33 @@
     </div>
     
     <x-footer-banner />
+
+    <script>
+    function question(question_title, user, desc,comments = []){
+        document.getElementById('modalTitle').innerHTML = question_title;
+        document.getElementById('modalUser').innerHTML = user;
+        document.getElementById('modalDesc').innerHTML = desc;
+
+        const commentsDiv = document.getElementById('modalComments');
+        commentsDiv.innerHTML = '<p class="font-semibold">Comments:</p>';
+
+        if (comments.length > 0) {
+        comments.forEach(comment => {
+            const div = document.createElement('div');
+            div.className = 'p-3 bg-gray-100 rounded';
+            div.innerHTML = `<p class="text-sm text-gray-600">${comment.user}</p><p>${comment.text}</p>`;
+            commentsDiv.appendChild(div);
+        });
+    } else {
+        commentsDiv.innerHTML += '<p class="text-gray-500">No comments yet.</p>';
+    }
+
+        document.getElementById('questionModal').showModal();
+    }
+    function closeQuestionModal(){
+        document.getElementById('questionModal').close();
+    }
+</script>
 </body>
 </html>
 </div>

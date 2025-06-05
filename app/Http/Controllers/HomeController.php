@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Activity;
 use App\Models\Category;
 use App\Models\Home;
+use App\Models\Question;
 use App\Models\Thread;
 use Illuminate\Http\Request;
 
@@ -16,12 +17,10 @@ class HomeController extends Controller
 
     public function index()
     {
-        
-        $categories = Category::all();
-        $threads = Thread::with('user')->latest()->take(5)->get();
-        $activities = Activity::with('user')->latest()->take(5)->get();
+        $threads = Question::with('user')->latest()->take(5)->get();
+        $categories = Category::with('questions')->get();
 
-        return view('home', compact('threads', 'activities','categories'));
+        return view('home', compact('categories','threads'));
     }
 
 
@@ -73,6 +72,6 @@ class HomeController extends Controller
      */
     public function destroy(Home $home)
     {
-        //
+        
     }
 }

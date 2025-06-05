@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\HomeController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\signupController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\QuestionController;
+use App\Http\Middleware\ValidUser;
 use App\Models\Category;
 
 Route::get('/', function () {
@@ -27,7 +29,10 @@ Route::get('login', [LoginController::class, 'showLogin'])->name('login');
 Route::post('login', [LoginController::class, 'store'])->name('login.submit');
 
 
-Route::resource('question', QuestionController::class);
+Route::post('/logout', LogoutController::class)->name('logout');
+
+
+Route::resource('question', QuestionController::class)->middleware(ValidUser::class);
 
 Route::resource('latest',LatestController::class);
 Route::resource('comment',CommentController::class);

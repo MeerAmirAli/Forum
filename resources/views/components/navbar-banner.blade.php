@@ -4,7 +4,6 @@
         <a href="{{ url('/') }}" class="btn btn-ghost text-xl">Tech Forum</a>
         <div class="hidden sm:flex gap-1">
             <a href="{{ url('/home') }}" class="btn btn-ghost btn-sm">Home</a>
-            <a href="{{ url('/categories') }}" class="btn btn-ghost btn-sm">Categories</a>
             <a href="{{ url('/latest') }}" class="btn btn-ghost btn-sm">Latest Posts</a>
             <a href="{{ url('question') }}" class="btn btn-primary btn-sm text-white">Ask a Question</a>
         </div>
@@ -29,10 +28,13 @@
                 <li><a href="">Profile</a></li>
                 <li><a href="{{ url('/settings') }}">Settings</a></li>
                 <li>
-                    <form method="POST" action="">
-                        @csrf
-                        <button type="submit">Logout</button>
-                    </form>
+                    <form method="POST" action="{{ route('logout') }}">
+    @csrf
+    <button type="submit" class="btn btn-sm bg-red-500 text-white hover:bg-red-600">
+        Logout
+    </button>
+</form>
+
                 </li>
             </ul>
         </div>
